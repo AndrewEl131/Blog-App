@@ -17,13 +17,12 @@ type Comment = {
 };
 
 type CommentListProps = {
-    postId: string
-}
+  postId: string;
+};
 
-export default function CommentList({ postId } : CommentListProps) {
+export default function CommentList({ postId }: CommentListProps) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentContent, setCommentContent] = useState("");
-
 
   async function getComments() {
     try {
@@ -73,7 +72,7 @@ export default function CommentList({ postId } : CommentListProps) {
 
   useEffect(() => {
     getComments();
-  }, [postId])
+  }, [postId]);
 
   return (
     <div className="py-2 px-2.5 w-[70vmin] flex flex-col items-center justify-center m-auto">
@@ -105,25 +104,37 @@ export default function CommentList({ postId } : CommentListProps) {
         {Array.isArray(comments) ? (
           comments.map((comment: Comment) => (
             <React.Fragment key={comment._id}>
-            <div
-              className="w-full flex items-center text-[2vmin] py-2 px-2.5 gap-3 columns-auto mt-2"
-              key={comment?._id}
-            >
-              <div className="flex flex-col justify-center items-center text-[14px]">
-                <Image
-                src={avatarIcon}
-                width={35}
-                height={30}
-                alt="profile picture"
-                className="rounded-full"
-              />
-              <h1>Test User</h1>
+              <div
+                className="w-full flex items-center text-[2vmin] py-2 px-2.5 gap-3 columns-auto mt-4"
+                key={comment?._id}
+              >
+                <div className="flex flex-col justify-center items-center text-[14px]">
+                  <Image
+                    src={avatarIcon}
+                    width={35}
+                    height={30}
+                    alt="profile picture"
+                    className="rounded-full"
+                  />
+                  <h1>Test User</h1>
+                </div>
+                <h1 className="w-[50vmin] flex-1 min-w-0 wrap-break-word">
+                  {comment?.content}
+                </h1>
+                <div className="relative group">
+                  <i className="cursor-pointer bx bx-dots-vertical-rounded text-[2.2vmin]" />
+
+                  <div className="absolute right-0 top-full  w-28 rounded-md bg-[#282142] border border-gray-600 text-sm text-gray-100 hidden group-hover:block z-20">
+                    <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer">
+                      Edit
+                    </p>
+                    <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer">
+                      Delete
+                    </p>
+                  </div>
+                </div>
               </div>
-              <h1 className="w-[50vmin] flex-1 min-w-0 wrap-break-word">
-                {comment?.content}
-              </h1>
-            </div>
-            <hr className="text-gray-300" />
+              <hr className="text-gray-300" />
             </React.Fragment>
           ))
         ) : (
