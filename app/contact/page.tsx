@@ -3,9 +3,9 @@ import Image from "next/image";
 
 export default function page() {
   return (
-    <main className="flex items-center justify-evenly h-[80vh]">
+    <main className="flex md:flex-row flex-col items-center justify-evenly md:h-[80vh] md:py-0 py-3">
       <div className="py-3 space-y-[15vmin]">
-        <div className="flex flex-col gap-[3vmin]">
+        <div className="flex flex-col gap-[3vmin] md:text-start text-center">
           <h1 className="text-5xl text-(--color-primary)">Get in Touch</h1>
 
           <h1 className="text-[18px]">I'd like to hear from you!</h1>

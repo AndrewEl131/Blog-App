@@ -77,7 +77,7 @@ export default function PostsFeed() {
               likedBy={post.likedBy}
             />
             <Link href={`/blog/${post.slug}/${post._id}`} className="mt-1">
-              <i className="text-[3vmin] text-[#9E3B3B] cursor-pointer bx  bx-message-circle-dots"></i>
+              <i className="text-[22px] text-[#9E3B3B] cursor-pointer bx  bx-message-circle-dots"></i>
             </Link>
           </div>
         </div>

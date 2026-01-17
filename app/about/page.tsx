@@ -4,12 +4,12 @@ import Image from "next/image";
 export default function page() {
   return (
     <main className="flex flex-col gap-[5vmin] py-[3.5vmin]">
-      <div className="w-[70%] m-auto space-y-3 text-[#9E3B3B]">
+      <div className="md:w-[70%] w-full m-auto space-y-3 text-[#9E3B3B]">
         <h1 className="text-7xl text-center ">About Us</h1>
         <hr />
       </div>
       <div className="flex justify-evenly">
-        <div className="w-85 flex flex-col gap-3">
+        <div className="md:w-85 flex flex-col gap-3 md:px-0 px-2">
           <h1 className="text-5xl">Our Team</h1>
 
           <p>
@@ -22,16 +22,16 @@ export default function page() {
           </p>
         </div>
         <div>
-          <Image src={"/assets/joe.jpg"} width={300} height={200} alt="" />
+          <Image src={"/assets/joe.jpg"} width={300} height={200} alt="" className="md:block hidden" />
         </div>
       </div>
 
       <div className="flex justify-evenly">
         <div>
-          <Image src={"/assets/work.jpg"} width={300} height={200} alt="" />
+          <Image src={"/assets/work.jpg"} width={300} height={200} alt="" className="md:block hidden" />
         </div>
 
-        <div className="w-85 flex flex-col gap-3">
+        <div className="md:w-85 flex flex-col gap-3  md:px-0 px-2">
           <h1 className="text-5xl">Our Story</h1>
 
           <p>

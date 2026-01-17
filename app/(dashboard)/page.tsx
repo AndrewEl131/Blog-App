@@ -5,7 +5,7 @@ import PostsFeed from "./PostsFeed";
 export default function Home() {
   return (
     <main className="py-8 space-y-10">
-      <div className="flex justify-evenly">
+      <div className="md:flex justify-evenly hidden">
         {/*  */}
         <div className="flex flex-col text-[#9E3B3B]">
           <div className="flex gap-1">

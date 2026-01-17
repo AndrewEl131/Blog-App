@@ -102,7 +102,7 @@ export default function LikeButton({
   return (
     <div className="flex items-center gap-1">
       <i
-        className={`text-[3vmin] text-[#9E3B3B] cursor-pointer transition-all duration-300 ${
+        className={`text-[22px] text-[#9E3B3B] cursor-pointer transition-all duration-300 ${
           isLiked 
             ? "bx bxs-heart scale-110" 
             : "bx bx-heart"
@@ -113,7 +113,7 @@ export default function LikeButton({
       <div className="relative">
         {/* Previous number sliding out */}
         <p 
-          className={`text-[2.5vmin] text-[#9E3B3B] transition-all duration-300 absolute ${
+          className={`text-[22px] text-[#9E3B3B] transition-all duration-300 absolute ${
             animate 
               ? isLiked 
                 ? "opacity-0 -translate-y-2 scale-90" 
@@ -126,7 +126,7 @@ export default function LikeButton({
         
         {/* Current number sliding in */}
         <p 
-          className={`text-[2.5vmin] text-[#9E3B3B] transition-all duration-300 ml-1.5 ${
+          className={`text-[22px] text-[#9E3B3B] transition-all duration-300 ml-1.5 ${
             animate 
               ? isLiked 
                 ? "translate-y-0 opacity-100" 

@@ -75,8 +75,8 @@ export default function CommentList({ postId }: CommentListProps) {
   }, [postId]);
 
   return (
-    <div className="py-2 px-2.5 w-[70vmin] flex flex-col items-center justify-center m-auto">
-      <div className="w-full flex gap-3">
+    <div className="py-2 px-2.5 md:w-[70vmin] flex flex-col items-center justify-center m-auto">
+      <div className="w-full flex md:justify-start justify-center gap-3">
         <Image
           src={avatarIcon}
           width={35}
@@ -86,14 +86,14 @@ export default function CommentList({ postId }: CommentListProps) {
         />
         <input
           type="text"
-          className="w-[35vmin] py-0.5 px-1 border-b columns-auto"
+          className="md:w-[35vmin] py-0.5 px-1 border-b columns-auto"
           value={commentContent}
           maxLength={50}
           onChange={(e) => setCommentContent(e.target.value)}
         />
         <button
           type="button"
-          className="bg-(--color-primary) px-12 py-1.5 text-(--color-text)"
+          className="bg-(--color-primary) md:px-12 px-4 py-1.5 text-(--color-text)"
           onClick={handleComment}
         >
           Comment
@@ -122,7 +122,7 @@ export default function CommentList({ postId }: CommentListProps) {
                   {comment?.content}
                 </h1>
                 <div className="relative group">
-                  <i className="cursor-pointer bx bx-dots-vertical-rounded text-[2.2vmin]" />
+                  <i className="cursor-pointer bx bx-dots-vertical-rounded text-[22px]" />
 
                   <div className="absolute right-0 top-full  w-28 rounded-md bg-[#282142] border border-gray-600 text-sm text-gray-100 hidden group-hover:block z-20">
                     <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer">
