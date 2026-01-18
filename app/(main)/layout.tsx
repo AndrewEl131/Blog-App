@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { Jost } from "next/font/google";
+import { Geist, Geist_Mono, Jost } from "next/font/google";
 import "@/app/globals.css";
+import Header from "@/Components/Header";
+import Footer from "@/Components/Footer";
 
 const jost = Jost({
   subsets: ["latin"],
@@ -14,19 +16,20 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="en">
       <head>
-        <link
-          href="https://cdn.boxicons.com/3.0.7/fonts/basic/boxicons.min.css"
-          rel="stylesheet"
-        />
+        <link href='https://cdn.boxicons.com/3.0.7/fonts/basic/boxicons.min.css' rel='stylesheet' />
       </head>
-      <body className={jost.variable}>
+      <body
+        className={jost.variable}
+      >
+        <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );

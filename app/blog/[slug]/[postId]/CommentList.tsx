@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import avatarIcon from "@/public/icons/avatar_icon.png";
+import { log } from "util";
 
 type Comment = {
   _id: string;
@@ -63,7 +64,8 @@ export default function CommentList({ postId }: CommentListProps) {
 
       console.log(data);
 
-      setComments((prev) => [...prev, data.comments]);
+      setComments((prev) => [...prev, ...data.comments]);
+      
       setCommentContent("");
     } catch (error: any) {
       console.log(error.message);
@@ -103,10 +105,9 @@ export default function CommentList({ postId }: CommentListProps) {
       <div className="w-[70vmin] space-y-3">
         {Array.isArray(comments) ? (
           comments.map((comment: Comment) => (
-            <React.Fragment key={comment._id}>
+            <React.Fragment key={comment?._id}>
               <div
                 className="w-full flex items-center text-[2vmin] py-2 px-2.5 gap-3 columns-auto mt-4"
-                key={comment?._id}
               >
                 <div className="flex flex-col justify-center items-center text-[14px]">
                   <Image

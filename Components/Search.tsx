@@ -142,7 +142,6 @@ export default function Search() {
                   className="p-3 hover:bg-gray-100 cursor-pointer transition-colors duration-150 border-b border-gray-200 last:border-b-0"
                   onClick={() => {
                     handleSearchClick(item)
-                    setSearch(item);
                     handleCloseSearch();
                   }}
                 >

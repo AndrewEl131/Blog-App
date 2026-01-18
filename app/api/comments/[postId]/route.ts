@@ -34,6 +34,7 @@ export async function POST(
     author,
   });
 
-  return NextResponse.json({ comment });
+  return NextResponse.json({ comments: [comment] });
+
 }
 

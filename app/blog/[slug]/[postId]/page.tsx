@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import avatarIcon from "@/public/icons/avatar_icon.png";
-import LikeButton from "../../../(dashboard)/LikeButton";
+import LikeButton from "../../../(main)/LikeButton";
 import { useParams } from "next/navigation";
 import CommentList from "./CommentList";
 
