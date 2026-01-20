@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import avatarIcon from "@/public/icons/avatar_icon.png";
-import { log } from "util";
 
 type Comment = {
   _id: string;

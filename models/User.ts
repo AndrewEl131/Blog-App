@@ -1,6 +1,6 @@
-import { Model, Schema, models } from "mongoose";
+import { Model, Schema, models, model } from "mongoose";
 
-const userSchema = new Model({
+const userSchema = new Schema({
     username: {
         type: String,
         required: true
@@ -12,5 +12,13 @@ const userSchema = new Model({
     password: {
         type: String,
         required: true
-    }
-})
+    },
+    profilePic: {
+        type: String,
+        default: null
+    },
+},
+{ timestamps: true },
+)
+
+export default models.User || model("User", userSchema);

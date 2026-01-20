@@ -25,13 +25,13 @@ export default function Header() {
               <Link href={"/"}>Home</Link>
             </li>
             <li className="hover-line">
-              <Link href={"/create"}>Create Post</Link>
-            </li>
-            <li className="hover-line">
               <Link href={"/about"}>About</Link>
             </li>
             <li className="hover-line">
               <Link href={"/contact"}>Contact</Link>
+            </li>
+            <li className="hover-line">
+              <Link href={"/profile"}>Profile</Link>
             </li>
           </ul>
 

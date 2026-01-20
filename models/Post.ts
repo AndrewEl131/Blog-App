@@ -13,22 +13,23 @@ const PostSchema = new Schema(
       type: String,
     },
     authorId: {
-      type: String,
-      required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     likes: {
       type: Number,
       default: 0,
     },
     slug: {
-        type: String
+      type: String,
     },
     likedBy: {
       type: [String],
       default: [],
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default models.Post || model("Post", PostSchema);

@@ -1,5 +1,6 @@
 import connectToDB from "@/lib/moongose";
 import Post from "@/models/Post";
+import User from "@/models/User";
 import { NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary";
 
@@ -13,7 +14,10 @@ function createSlug(title: string) {
 
 export async function GET() {
   await connectToDB();
-  const posts = await Post.find().sort({ createdAt: -1 });
+  const posts = await Post.find()
+  .populate("authorId", "username profilePic")
+  .sort({ createdAt: -1 });
+
   return NextResponse.json(posts);
 }
 
@@ -27,6 +31,7 @@ export async function POST(req: Request) {
     const desc = formData.get("desc") as string | null;
     const type = formData.get("type") as string;
     const image = formData.get("image") as File | null;
+    const authorId = formData.get("authorId") as string;
 
     if (!title) {
       return NextResponse.json(
@@ -34,6 +39,9 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+
+    const user = await User.findById(authorId);
+
 
     let imageUrl = null;
 
@@ -58,6 +66,7 @@ export async function POST(req: Request) {
       desc: type === "text" ? desc : null,
       image: imageUrl,
       slug: createSlug(title),
+      authorId
     });
 
     return NextResponse.json(newPost, { status: 201 });

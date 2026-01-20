@@ -14,9 +14,15 @@ type Post = {
   image?: string | null;
   slug: string;
   likes: number;
-  likedBy: Array<string>;
+  likedBy: string[];
   createdAt: string;
+  authorId: {
+    _id: string;
+    username: string;
+    profilePic?: string | null;
+  };
 };
+
 
 export default function PostsFeed() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -47,13 +53,23 @@ export default function PostsFeed() {
           className="w-[70vmin] px-2.5 py-2.5 m-auto flex flex-col gap-3 border-b border-b-rose-500/10"
         >
           <div className="flex justify-between">
-            <Image
+            {post.authorId?.profilePic ? (
+              <Image
+              src={post.authorId.profilePic}
+              width={40}
+              height={40}
+              alt="profile pic"
+              className="rounded-full"
+            />
+            ) : (
+              <Image
               src={avatarIcon}
               width={40}
               height={40}
-              alt="profile picture"
+              alt="profile pic"
               className="rounded-full"
             />
+            )}
             <h1 className="text-2xl">{post.title}</h1>
           </div>
 

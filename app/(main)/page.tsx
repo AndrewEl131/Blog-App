@@ -1,10 +1,16 @@
 import { posts } from "@/userDummyData";
 import Image from "next/image";
 import PostsFeed from "./PostsFeed";
+import Link from "next/link";
 
 export default function Home() {
   return (
     <main className="py-8 space-y-10">
+      <div className="fixed right-3 bottom-0 w-13 h-13 rounded-full bg-(--color-primary) flex justify-center items-center pt-1">
+        <Link href={'/create'}>
+        <i className='text-(--color-text) text-3xl bxr  bx-plus'></i>
+        </Link> 
+      </div>
       <div className="md:flex justify-evenly hidden">
         {/*  */}
         <div className="flex flex-col text-[#9E3B3B]">
