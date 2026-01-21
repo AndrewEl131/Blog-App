@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { generateToken } from "@/lib/utils";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import connectToDB from "@/lib/moongose";
+import cloudinary from "@/lib/cloudinary";
 
 interface CustomJwtPayload extends JwtPayload {
   userId: string;
@@ -12,36 +13,72 @@ interface CustomJwtPayload extends JwtPayload {
 export async function POST(req: Request) {
   await connectToDB();
 
-  const { username, email, password, profilePic } = await req.json();
+  const formData = await req.formData();
 
-  if (!username || !email || !password)
-    return NextResponse.json({ success: false, message: "Please fill fields" });
+  const username = formData.get("username") as string;
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+  const profilePic = formData.get("profilePic") as File | null;
+
+  if (!username || !email || !password) {
+    return NextResponse.json(
+      { success: false, message: "Please fill fields" },
+      { status: 400 },
+    );
+  }
 
   const isMatch = await User.findOne({ email });
-
-  if (isMatch)
-    return NextResponse.json({ success: false, message: "User already exists on that email" });
+  if (isMatch) {
+    return NextResponse.json(
+      { success: false, message: "User already exists" },
+      { status: 409 },
+    );
+  }
 
   const hashedPassword = await bcrypt.hash(password, 10);
+
+  let imageUrl = null;
+  if (profilePic) {
+    const buffer = Buffer.from(await profilePic.arrayBuffer());
+
+    const upload = await new Promise<any>((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream({ folder: "profilePics" }, (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        })
+        .end(buffer);
+    });
+
+    imageUrl = upload.secure_url;
+  }
 
   const newUser = await User.create({
     username,
     email,
     password: hashedPassword,
-    profilePic,
+    profilePic: imageUrl,
   });
 
   const token = generateToken(newUser._id);
 
-  const JWT_SECRET = process.env.JWT_SECRET;
-  if (!JWT_SECRET) throw new Error("JWT_SECRET is not defined");
+  const res = NextResponse.json({
+    success: true,
+    user: {
+      _id: newUser._id,
+      username: newUser.username,
+      email: newUser.email,
+      profilePic: newUser.profilePic,
+      createdAt: newUser.createdAt,
+    },
+  });
 
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET) as CustomJwtPayload;
-    console.log("✅ Token verified:", decoded.userId);
-  } catch (err: any) {
-    console.log("❌ Token self-verification failed:", err.message);
-  }
+  res.cookies.set("token", token, {
+    httpOnly: true,
+    sameSite: "strict",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7,
+  });
 
-  return NextResponse.json({ success: true, token, user: newUser });
+  return res;
 }

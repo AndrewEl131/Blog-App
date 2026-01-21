@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAuthStore } from "@/app/store/useAuthStore";
+import { useRouter } from "next/navigation";
 
 export default function CreatePostForm() {
   const [type, setType] = useState<"text" | "image">("text");
@@ -11,6 +12,8 @@ export default function CreatePostForm() {
   const [frontError, setFrontError] = useState<string | null>(null);
 
   const { user, setUser } = useAuthStore();
+
+  const router = useRouter();
 
   async function CreatePost() {
     try {
@@ -49,7 +52,7 @@ export default function CreatePostForm() {
       }
 
       const data = await res.json();
-      console.log(data);
+      router.push('/')
     } catch (error: any) {
       console.error(error.message);
     }

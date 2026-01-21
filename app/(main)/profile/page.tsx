@@ -56,7 +56,7 @@ export default function page() {
           </div>
         </form>
         <div className="flex justify-center items-center w-[50%]">
-            <Image src={user?.profilePic || avatarIcon} alt="" width={150} height={150} />
+            <Image src={user?.profilePic || avatarIcon} alt="" width={120} height={120} className="rounded-full" />
         </div>
       </div>
     </main>
