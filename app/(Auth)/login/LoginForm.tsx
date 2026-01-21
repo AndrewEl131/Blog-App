@@ -27,7 +27,7 @@ export default function LoginForm() {
             const data = await res.json();
             
             if(data.success) return (
-              setUser(data),
+              setUser(data.user),
               router.push('/')
             )
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Jost } from "next/font/google";
 import "@/app/globals.css";
+import AuthProvider from "@/Components/AuthProvider";
 
 const jost = Jost({
   subsets: ["latin"],
@@ -26,7 +27,7 @@ export default function RootLayout({
         />
       </head>
       <body className={jost.variable}>
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
