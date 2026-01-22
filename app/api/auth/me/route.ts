@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import connectToDB from "@/lib/moongose";
 import User from "@/models/User";
+import cloudinary from "@/lib/cloudinary";
 
 interface JwtPayload {
   userId: string;
@@ -74,15 +75,28 @@ export async function POST(req: Request) {
 
     const formData = await req.formData();
     const username = formData.get("username") as string | null;
-    const profilePic = formData.get("profilePic") as File | null;
+    const file = formData.get("profilePic") as File | null;
 
     const updateData: any = {};
     if (username) updateData.username = username;
 
-    // ⬇️ upload file here (Cloudinary / S3)
-    if (profilePic) {
-      // upload logic
-      updateData.profilePic = "UPLOADED_IMAGE_URL";
+    if (file) {
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+
+      const uploadResult: any = await new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream(
+            { folder: "profilePics" },
+            (err, result) => {
+              if (err) reject(err);
+              else resolve(result);
+            }
+          )
+          .end(buffer);
+      });
+
+      updateData.profilePic = uploadResult.secure_url;
     }
 
     if (Object.keys(updateData).length === 0) {
