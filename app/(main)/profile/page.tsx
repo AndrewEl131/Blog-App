@@ -3,13 +3,49 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import avatarIcon from "@/public/icons/avatar_icon.png";
+import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/app/store/useAuthStore";
 
 export default function page() {
-  const { user } = useAuthStore();
-  
+  const router = useRouter();
+
+  const { user, setUser } = useAuthStore();
+
   const [selectedImg, setIsSelectedImg] = useState<File | null>(null);
   const [username, setUserName] = useState(user?.username);
+
+  const [error, setError] = useState("");
+
+  const imageSrc =
+    user?.profilePic && user.profilePic.startsWith("http")
+      ? user.profilePic
+      : user?.profilePic
+        ? `/${user.profilePic}`
+        : avatarIcon;
+
+  async function updateProfile() {
+    try {
+      if (!selectedImg && !username) return setError("Please fill fields");
+
+      const formData = new FormData();
+      if (username) formData.append("username", username);
+      if (selectedImg) formData.append("profilePic", selectedImg);
+
+      const res = await fetch("/api/auth/me", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Update failed");
+
+      const data = await res.json();
+
+      setUser(data.user);
+      router.push("/");
+    } catch (error: any) {
+      setError(error.message);
+    }
+  }
 
   return (
     <main className="min-h-screen flex justify-center items-center">
@@ -36,7 +72,9 @@ export default function page() {
                   selectedImg ? URL.createObjectURL(selectedImg) : avatarIcon
                 }
                 alt=""
-                className={`w-12 h-12 ${selectedImg && "rounded-full"}`}
+                className={` ${selectedImg && "rounded-full"}`}
+                width={50}
+                height={50}
               />
               upload profile image
             </label>
@@ -52,11 +90,28 @@ export default function page() {
             />
           </div>
           <div>
-            <button className="bg-(--color-primary) px-12 py-1.5 text-(--color-text)">Save</button>
+            <button
+              type="button"
+              className="bg-(--color-primary) px-12 py-1.5 text-(--color-text)"
+              onClick={updateProfile}
+            >
+              Save
+            </button>
           </div>
+          {error && (
+            <div>
+              <p>{error}</p>
+            </div>
+          )}
         </form>
         <div className="flex justify-center items-center w-[50%]">
-            <Image src={user?.profilePic || avatarIcon} alt="" width={120} height={120} className="rounded-full" />
+          <Image
+            src={imageSrc}
+            alt=""
+            width={120}
+            height={120}
+            className="rounded-full"
+          />
         </div>
       </div>
     </main>
