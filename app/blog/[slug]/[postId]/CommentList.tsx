@@ -12,6 +12,7 @@ type Comment = {
   postId: string;
   content: string;
   authorId: {
+    _id: string;
     username: string;
     profilePic: string;
   };
@@ -38,7 +39,7 @@ export default function CommentList({ postId }: CommentListProps) {
 
       const data = await res.json();
       console.log(data);
-      
+
       setComments(data.comments);
     } catch (error: any) {
       console.log(error.message);
@@ -51,7 +52,7 @@ export default function CommentList({ postId }: CommentListProps) {
   }, [postId]);
 
   if (!user) {
-    return null; 
+    return null;
   }
 
   const userId = user._id;
@@ -82,13 +83,23 @@ export default function CommentList({ postId }: CommentListProps) {
   return (
     <div className="py-2 px-2.5 md:w-[70vmin] flex flex-col items-center justify-center m-auto">
       <div className="w-full flex md:justify-start justify-center gap-3">
-        <Image
-          src={avatarIcon}
-          width={35}
-          height={30}
-          alt="profile picture"
-          className="rounded-full"
-        />
+        {user.profilePic ? (
+          <Image
+            src={user.profilePic}
+            width={35}
+            height={35}
+            alt="profile pic"
+            className="rounded-full"
+          />
+        ) : (
+          <Image
+            src={avatarIcon}
+            width={35}
+            height={40}
+            alt="profile pic"
+            className="rounded-full"
+          />
+        )}
         <input
           type="text"
           className="md:w-[35vmin] py-0.5 px-1 border-b columns-auto"
@@ -110,12 +121,12 @@ export default function CommentList({ postId }: CommentListProps) {
           comments.map((comment: Comment) => (
             <React.Fragment key={comment?._id}>
               <div className="w-full flex items-center text-[2vmin] py-2 px-2.5 gap-3 columns-auto mt-4">
-                <div className="flex flex-col justify-center items-center text-[14px]">
+                <div className="flex flex-col justify-center items-center text-[16px]">
                   {comment.authorId?.profilePic ? (
                     <Image
                       src={comment.authorId.profilePic}
                       width={35}
-                      height={40}
+                      height={35}
                       alt="profile pic"
                       className="rounded-full"
                     />
@@ -128,23 +139,25 @@ export default function CommentList({ postId }: CommentListProps) {
                       className="rounded-full"
                     />
                   )}
-                  <h1>{comment.authorId.username}</h1>
+                  <h1>@{comment.authorId.username}</h1>
                 </div>
                 <h1 className="w-[50vmin] flex-1 min-w-0 wrap-break-word">
                   {comment?.content}
                 </h1>
-                <div className="relative group">
-                  <i className="cursor-pointer bx bx-dots-vertical-rounded text-[22px]" />
+                {userId == comment.authorId._id && (
+                  <div className="relative group">
+                    <i className="cursor-pointer bx bx-dots-vertical-rounded text-[22px]" />
 
-                  <div className="absolute right-0 top-full  w-28 rounded-md bg-[#282142] border border-gray-600 text-sm text-gray-100 hidden group-hover:block z-20">
-                    <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer">
-                      Edit
-                    </p>
-                    <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer">
-                      Delete
-                    </p>
+                    <div className="absolute right-0 top-full  w-28 rounded-md bg-[#282142] border border-gray-600 text-sm text-gray-100 hidden group-hover:block z-20">
+                      <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer">
+                        Edit
+                      </p>
+                      <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer">
+                        Delete
+                      </p>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
               <hr className="text-gray-300" />
             </React.Fragment>

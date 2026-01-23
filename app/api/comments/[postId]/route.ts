@@ -11,10 +11,11 @@ export async function GET(
   await connectToDB();
   const { postId } = await params;
 
-  const comments = await Comment.find({ postId }).populate(
-    "authorId",
-    "username profilePic",
-  );
+  const comments = await Comment.find({ postId }).populate({
+    path: "authorId",
+    select: "username profilePic",
+    model: "User",
+  });
 
   console.log("POPULATED COMMENT:", comments);
 

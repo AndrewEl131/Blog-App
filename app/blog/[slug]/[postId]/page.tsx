@@ -6,6 +6,7 @@ import avatarIcon from "@/public/icons/avatar_icon.png";
 import LikeButton from "../../../(main)/LikeButton";
 import { useParams } from "next/navigation";
 import CommentList from "./CommentList";
+import { useAuthStore } from "@/app/store/useAuthStore";
 
 type Post = {
   _id: string;
@@ -28,10 +29,13 @@ type Comment = {
   createdAt: string;
 };
 
-export default function page() {
+export default function BlogPage() {
   const [post, setPost] = useState<Post | null>(null);
   const { slug, postId } = useParams<{ slug: string; postId: string }>();
  
+  const { user } = useAuthStore();
+
+  if(!user) return;
 
   async function getPost() {
     try {
@@ -49,17 +53,15 @@ export default function page() {
 
 
   useEffect(() => {
-    if (slug && postId) {
       getPost();
-    }
-  }, [slug, postId]);
+  }, []);
 
   return (
     <main className="py-[3.5vmin]">
       <div className="w-[70vmin] px-2.5 py-2.5 m-auto flex flex-col gap-3">
         <div className="flex justify-between">
           <Image
-            src={avatarIcon}
+            src={user?.profilePic}
             width={40}
             height={40}
             alt="profile picture"
