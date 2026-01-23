@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useAuthStore } from "../store/useAuthStore";
 
 export default function LikeButton({
   slug,
@@ -18,12 +19,11 @@ export default function LikeButton({
   const [animate, setAnimate] = useState(false);
   const previousLikesRef = useRef(initialLikes);
 
-  let userId = localStorage.getItem("userId");
+  const { user } = useAuthStore();
 
-  if (!userId) {
-    userId = crypto.randomUUID();
-    localStorage.setItem("userId", userId);
-  }
+  if(!user) return;
+
+  const userId = user._id;
 
   const handleLike = async () => {
     if (loading) return;
@@ -32,7 +32,7 @@ export default function LikeButton({
     const res = await fetch(`/api/posts/${slug}/like`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId }),
+      body: JSON.stringify({ userId })
     });
 
     const data = await res.json();
@@ -94,10 +94,10 @@ export default function LikeButton({
   }, [animate, likes]);
 
   useEffect(() => {
-    if (likedBy.includes(userId)) {
+    if (likedBy.includes(user._id)) {
       setIsLiked(true);
     }
-  }, [likedBy, userId]);
+  }, [likedBy]);
 
   return (
     <div className="flex items-center gap-1">
@@ -130,7 +130,7 @@ export default function LikeButton({
             animate 
               ? isLiked 
                 ? "translate-y-0 opacity-100" 
-                : "-translate-y-0 opacity-100"
+                : "translate-y-0 opacity-100"
               : ""
           }`}
         >

@@ -1,4 +1,4 @@
-import mongoose, { Schema, models } from "mongoose";
+import mongoose, { Schema, model, models } from "mongoose";
 
 const CommentSchema = new Schema(
   {
@@ -7,32 +7,27 @@ const CommentSchema = new Schema(
       ref: "Post",
       required: true,
     },
-
     content: {
       type: String,
       required: true,
-      trim: true,
     },
-
-    author: {
-      type: String,
-      default: "Anonymous",
+    authorId: {
+      type: Schema.Types.ObjectId,
+      ref: "User", 
+      required: true,
     },
-
     likes: {
       type: Number,
       default: 0,
     },
-    likedBy: {
-      type: [String],
-      default: [],
-    },
+    likedBy: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-const Comment = models.Comment || mongoose.model("Comment", CommentSchema);
-
-export default Comment;
+export default models.Comment || model("Comment", CommentSchema);
