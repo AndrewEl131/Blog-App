@@ -37,8 +37,7 @@ export default function CommentList({ postId }: CommentListProps) {
 
       if (!res.ok) return;
 
-      const data = await res.json();
-      console.log(data);
+      const data = await res.json();;
 
       setComments(data.comments);
     } catch (error: any) {
