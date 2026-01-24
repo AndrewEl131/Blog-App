@@ -50,8 +50,6 @@ export async function POST(
       "username profilePic",
     );
 
-    console.log("POPULATED COMMENT:", populatedComment.authorId);
-
     return NextResponse.json({
       success: true,
       comments: [populatedComment],
@@ -64,4 +62,22 @@ export async function POST(
       { status: 500 },
     );
   }
+}
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ postId: string }> },
+) {
+  await connectToDB();
+  const { postId } = await params;
+
+  const { content, commentId } = await req.json();
+
+  const newComment = await Comment.findByIdAndUpdate(
+    commentId,
+    { content },
+    { new: true },
+  );
+
+  return NextResponse.json(newComment)
 }

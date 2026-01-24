@@ -29,6 +29,9 @@ export default function CommentList({ postId }: CommentListProps) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentContent, setCommentContent] = useState("");
 
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editingContent, setEditingContent] = useState("");
+
   const { user } = useAuthStore();
 
   async function getComments() {
@@ -37,7 +40,7 @@ export default function CommentList({ postId }: CommentListProps) {
 
       if (!res.ok) return;
 
-      const data = await res.json();;
+      const data = await res.json();
 
       setComments(data.comments);
     } catch (error: any) {
@@ -74,6 +77,21 @@ export default function CommentList({ postId }: CommentListProps) {
       }
 
       setCommentContent("");
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  }
+
+  async function handleEditComment(commentId: string, commentContent: string) {
+    try {
+      const res = await fetch(`/api/comments/${postId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          content: commentContent,
+          commentId: commentId,
+        }),
+      });
     } catch (error: any) {
       console.log(error.message);
     }
@@ -140,22 +158,44 @@ export default function CommentList({ postId }: CommentListProps) {
                   )}
                   <h1>@{comment.authorId.username}</h1>
                 </div>
-                <h1 className="w-[50vmin] flex-1 min-w-0 wrap-break-word">
-                  {comment?.content}
-                </h1>
-                {userId == comment.authorId._id && (
-                  <div className="relative group">
-                    <i className="cursor-pointer bx bx-dots-vertical-rounded text-[22px]" />
+                {editingCommentId === comment._id ? (
+                  <>
+                  <input
+                    type="text"
+                    value={editingContent}
+                    maxLength={50}
+                    onChange={(e) => setEditingContent(e.target.value)}
+                    className="w-[50vmin] flex-1 border-b bg-transparent outline-none"
+                  />
+                  <button onClick={() => handleEditComment(comment._id, editingContent)}>Save</button>
+                  </>
+                ) : (
+                  <h1 className="w-[50vmin] flex-1 min-w-0 wrap-break-words">
+                    {comment.content}
+                  </h1>
+                )}
 
-                    <div className="absolute right-0 top-full  w-28 rounded-md bg-[#282142] border border-gray-600 text-sm text-gray-100 hidden group-hover:block z-20">
-                      <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer">
-                        Edit
-                      </p>
-                      <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer">
-                        Delete
-                      </p>
+                {userId == comment.authorId._id && (
+                  <>
+                    <div className="relative group">
+                      <i className="cursor-pointer bx bx-dots-vertical-rounded text-[22px]" />
+
+                      <div className="absolute right-0 top-full  w-28 rounded-md bg-[#282142] border border-gray-600 text-sm text-gray-100 hidden group-hover:block z-20">
+                        <p
+                          className="px-3 py-2 hover:bg-gray-700 cursor-pointer"
+                          onClick={() => {
+                            setEditingCommentId(comment._id);
+                            setEditingContent(comment.content);
+                          }}
+                        >
+                          Edit
+                        </p>
+                        <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer">
+                          Delete
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  </>
                 )}
               </div>
               <hr className="text-gray-300" />
