@@ -69,7 +69,6 @@ export async function PATCH(
   { params }: { params: Promise<{ postId: string }> },
 ) {
   await connectToDB();
-  const { postId } = await params;
 
   const { content, commentId } = await req.json();
 
@@ -80,4 +79,16 @@ export async function PATCH(
   );
 
   return NextResponse.json(newComment)
+}
+
+export async function DELETE(req: Request) {
+  await connectToDB();
+
+  const { commentId } = await req.json();
+
+  if(!commentId) return NextResponse.json({success: false, message: "Comment id not found"});
+
+  const comment = await Comment.findByIdAndDelete(commentId)
+
+  return NextResponse.json({success: true, message: "Successfully Deleted!"});
 }

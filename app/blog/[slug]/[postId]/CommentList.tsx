@@ -97,6 +97,26 @@ export default function CommentList({ postId }: CommentListProps) {
     }
   }
 
+  async function handleDeleteComment(commentId: string) {
+    try {
+      const res = await fetch(`/api/comments/${postId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          commentId: commentId,
+        }),
+      })
+
+      const data = await res.json();
+
+      if(data.success){
+        getComments();
+      }
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  }
+
   return (
     <div className="py-2 px-2.5 md:w-[70vmin] flex flex-col items-center justify-center m-auto">
       <div className="w-full flex md:justify-start justify-center gap-3">
@@ -167,7 +187,7 @@ export default function CommentList({ postId }: CommentListProps) {
                     onChange={(e) => setEditingContent(e.target.value)}
                     className="w-[50vmin] flex-1 border-b bg-transparent outline-none"
                   />
-                  <button onClick={() => handleEditComment(comment._id, editingContent)}>Save</button>
+                  <button className="bg-(--color-primary) px-12 py-1.5 text-(--color-text)" onClick={() => handleEditComment(comment._id, editingContent)}>Save</button>
                   </>
                 ) : (
                   <h1 className="w-[50vmin] flex-1 min-w-0 wrap-break-words">
@@ -190,7 +210,7 @@ export default function CommentList({ postId }: CommentListProps) {
                         >
                           Edit
                         </p>
-                        <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer">
+                        <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer" onClick={() => handleDeleteComment(comment._id)}>
                           Delete
                         </p>
                       </div>
