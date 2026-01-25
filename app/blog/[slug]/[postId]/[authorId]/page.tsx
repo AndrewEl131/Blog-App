@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import avatarIcon from "@/public/icons/avatar_icon.png";
-import LikeButton from "../../../(main)/LikeButton";
+import LikeButton from "../../../../(main)/LikeButton";
 import { useParams } from "next/navigation";
 import CommentList from "./CommentList";
 import { useAuthStore } from "@/app/store/useAuthStore";
@@ -13,6 +13,11 @@ type Post = {
   title: string;
   desc?: string | null;
   image?: string | null;
+  authorId: {
+    _id: string;
+    profilePic: string | null;
+    username: string;
+  }
   slug: string;
   likes: number;
   likedBy: Array<string>;
@@ -31,15 +36,15 @@ type Comment = {
 
 export default function BlogPage() {
   const [post, setPost] = useState<Post | null>(null);
-  const { slug, postId } = useParams<{ slug: string; postId: string }>();
- 
+  const { slug, postId, authorId } = useParams<{ slug: string; postId: string, authorId: string }>();
+
   const { user } = useAuthStore();
 
-  if(!user) return;
+  if (!user) return;
 
   async function getPost() {
     try {
-      const res = await fetch(`/api/post/${slug}`);
+      const res = await fetch(`/api/post/${slug}/${authorId}`);
 
       if (!res.ok) return;
 
@@ -51,22 +56,34 @@ export default function BlogPage() {
     }
   }
 
-
   useEffect(() => {
-      getPost();
+    getPost();
   }, []);
 
   return (
     <main className="py-[3.5vmin]">
       <div className="w-[70vmin] px-2.5 py-2.5 m-auto flex flex-col gap-3">
         <div className="flex justify-between">
-          <Image
-            src={user?.profilePic}
-            width={40}
-            height={40}
-            alt="profile picture"
-            className="rounded-full"
-          />
+          {user._id === post?.authorId._id ? (
+            <div className="flex items-center gap-4">
+              <Image
+              src={post?.authorId.profilePic || avatarIcon}
+              width={40}
+              height={40}
+              alt="profile picture"
+              className="rounded-full"
+            />
+              <i className="text-4xl text-(--color-primary) cursor-pointer bx  bx-pencil-circle"></i>
+            </div>
+          ) : (
+            <Image
+              src={post?.authorId.profilePic || avatarIcon}
+              width={40}
+              height={40}
+              alt="profile picture"
+              className="rounded-full"
+            />
+          )}
           <h1 className="text-2xl">{post?.title}</h1>
         </div>
 
