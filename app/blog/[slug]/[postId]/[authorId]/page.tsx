@@ -7,6 +7,7 @@ import LikeButton from "../../../../(main)/LikeButton";
 import { useParams } from "next/navigation";
 import CommentList from "./CommentList";
 import { useAuthStore } from "@/app/store/useAuthStore";
+import Link from "next/link";
 
 type Post = {
   _id: string;
@@ -17,7 +18,7 @@ type Post = {
     _id: string;
     profilePic: string | null;
     username: string;
-  }
+  };
   slug: string;
   likes: number;
   likedBy: Array<string>;
@@ -36,7 +37,11 @@ type Comment = {
 
 export default function BlogPage() {
   const [post, setPost] = useState<Post | null>(null);
-  const { slug, postId, authorId } = useParams<{ slug: string; postId: string, authorId: string }>();
+  const { slug, postId, authorId } = useParams<{
+    slug: string;
+    postId: string;
+    authorId: string;
+  }>();
 
   const { user } = useAuthStore();
 
@@ -61,19 +66,21 @@ export default function BlogPage() {
   }, []);
 
   return (
-    <main className="py-[3.5vmin]">
+    <main className="py-[3.5vmin] flex flex-col justify-center">
       <div className="w-[70vmin] px-2.5 py-2.5 m-auto flex flex-col gap-3">
         <div className="flex justify-between">
           {user._id === post?.authorId._id ? (
             <div className="flex items-center gap-4">
               <Image
-              src={post?.authorId.profilePic || avatarIcon}
-              width={40}
-              height={40}
-              alt="profile picture"
-              className="rounded-full"
-            />
-              <i className="text-4xl text-(--color-primary) cursor-pointer bx  bx-pencil-circle"></i>
+                src={post?.authorId.profilePic || avatarIcon}
+                width={40}
+                height={40}
+                alt="profile picture"
+                className="rounded-full"
+              />
+              <Link href={`/edit-post/${postId}/${authorId}/${slug}`}>
+                <i className="text-4xl text-(--color-primary) cursor-pointer bx  bx-pencil-circle"></i>
+              </Link>
             </div>
           ) : (
             <Image
