@@ -61,11 +61,20 @@ export async function POST(req: Request) {
       imageUrl = upload.secure_url;
     }
 
+    let slug = createSlug(title);
+
+    const isMatch = await Post.findOne({ slug });
+
+    if(isMatch) {
+      const random = Math.random().toString(36).substring(2, 8);
+      slug = createSlug(`${title}-${random}`)
+    }
+
     const newPost = await Post.create({
       title,
       desc: type === "text" ? desc : null,
       image: imageUrl,
-      slug: createSlug(title),
+      slug: slug,
       authorId
     });
 

@@ -159,9 +159,9 @@ export default function CommentList({ postId }: CommentListProps) {
             <React.Fragment key={comment?._id}>
               <div className="w-full flex items-center text-[2vmin] py-2 px-2.5 gap-3 columns-auto mt-4">
                 <div className="flex flex-col justify-center items-center text-[16px]">
-                  {comment.authorId?.profilePic ? (
+                  {comment?.authorId?.profilePic ? (
                     <Image
-                      src={comment.authorId.profilePic}
+                      src={comment.authorId?.profilePic}
                       width={35}
                       height={35}
                       alt="profile pic"
@@ -195,7 +195,7 @@ export default function CommentList({ postId }: CommentListProps) {
                   </h1>
                 )}
 
-                {userId == comment.authorId._id && (
+                {userId == comment?.authorId?._id && (
                     <div className="relative group">
                       <i className="cursor-pointer bx bx-dots-vertical-rounded text-[22px]" />
 

@@ -5,6 +5,7 @@ import Image from "next/image";
 import avatarIcon from "@/public/icons/avatar_icon.png";
 import LikeButton from "../../../../(main)/LikeButton";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import CommentList from "./CommentList";
 import { useAuthStore } from "@/app/store/useAuthStore";
 import Link from "next/link";
@@ -37,12 +38,15 @@ type Comment = {
 
 export default function BlogPage() {
   const [post, setPost] = useState<Post | null>(null);
+  const [selectedDelete, setSelectedDelete] = useState(false);
+
   const { slug, postId, authorId } = useParams<{
     slug: string;
     postId: string;
     authorId: string;
   }>();
 
+  const router = useRouter();
   const { user } = useAuthStore();
 
   if (!user) return;
@@ -61,6 +65,22 @@ export default function BlogPage() {
     }
   }
 
+  async function deletePost() {
+    try {
+      const res = await fetch(`/api/post/${slug}/${authorId}`, {
+        method: "DELETE",
+        headers: {"Content-Type": "application/json"},
+      });
+
+      if (!res.ok) return;
+      
+      setSelectedDelete(false);
+      router.push("/")
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  }
+
   useEffect(() => {
     getPost();
   }, []);
@@ -69,10 +89,10 @@ export default function BlogPage() {
     <main className="py-[3.5vmin] flex flex-col justify-center">
       <div className="w-[70vmin] px-2.5 py-2.5 m-auto flex flex-col gap-3">
         <div className="flex justify-between">
-          {user._id === post?.authorId._id ? (
+          {user._id === post?.authorId?._id ? (
             <div className="flex items-center gap-4">
               <Image
-                src={post?.authorId.profilePic || avatarIcon}
+                src={post?.authorId?.profilePic || avatarIcon}
                 width={40}
                 height={40}
                 alt="profile picture"
@@ -87,7 +107,7 @@ export default function BlogPage() {
                       Edit
                     </p>
                   </Link>
-                  <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer">
+                  <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer" onClick={() => setSelectedDelete(true)}>
                     Delete
                   </p>
                 </div>
@@ -95,7 +115,7 @@ export default function BlogPage() {
             </div>
           ) : (
             <Image
-              src={post?.authorId.profilePic || avatarIcon}
+              src={post?.authorId?.profilePic || avatarIcon}
               width={40}
               height={40}
               alt="profile picture"
@@ -129,6 +149,27 @@ export default function BlogPage() {
         </div>
       </div>
       <CommentList postId={postId} />
+
+      {/* Modal */}
+      {selectedDelete && (
+        <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white p-6 rounded-md w-[90%] max-w-sm text-center flex flex-col gap-4">
+            <h2 className="text-xl font-semibold">Are you sure that you want to delete post?</h2>
+            <button
+              onClick={deletePost}
+              className="bg-rose-500 text-white px-4 py-2 rounded hover:bg-rose-600 transition"
+            >
+              Delete
+            </button>
+            <button
+              onClick={() => setSelectedDelete(false)}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

@@ -75,3 +75,35 @@ export async function PUT(
 
   return NextResponse.json({ post });
 }
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ slug: string; authorId: string }> },
+) {
+  await connectToDB();
+
+  const { slug, authorId } = await params;
+
+  const post = await Post.findOne({ slug });
+
+  if (!post) {
+    return NextResponse.json(
+      { error: "Post not found" },
+      { status: 404 }
+    );
+  }
+
+  if (post.authorId.toString() !== authorId) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 403 }
+    );
+  }
+
+  await Post.deleteOne({ _id: post._id });
+
+  return NextResponse.json({
+    success: true,
+    message: "Successfully deleted",
+  });
+}
