@@ -196,7 +196,6 @@ export default function CommentList({ postId }: CommentListProps) {
                 )}
 
                 {userId == comment.authorId._id && (
-                  <>
                     <div className="relative group">
                       <i className="cursor-pointer bx bx-dots-vertical-rounded text-[22px]" />
 
@@ -215,7 +214,6 @@ export default function CommentList({ postId }: CommentListProps) {
                         </p>
                       </div>
                     </div>
-                  </>
                 )}
               </div>
               <hr className="text-gray-300" />

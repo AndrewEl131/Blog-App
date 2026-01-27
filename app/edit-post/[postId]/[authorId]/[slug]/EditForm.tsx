@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import avatarIcon from "@/public/icons/avatar_icon.png";
+import Link from "next/link";
 
 type Props = {
   postId: string;
@@ -50,8 +51,24 @@ export default function EditForm({ postId, authorId, slug }: Props) {
         setFormType("image");
       } else {
         setFormType("text");
-        setText(data.desc)
+        setText(data.desc);
       }
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  }
+
+  async function updatePost() {
+    try {
+      const res = await fetch(`/api/post/${slug}/${authorId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: title,
+          desc: text,
+          image: selectedImg,
+        }),
+      });
     } catch (error: any) {
       console.log(error.message);
     }
@@ -98,7 +115,13 @@ export default function EditForm({ postId, authorId, slug }: Props) {
       ) : (
         <div className="w-full flex flex-col gap-1 items-center text-3xl">
           <label htmlFor="title">Text</label>
-          <textarea id="text" value={text} onChange={(e) => setText(e.target.value)} className="border w-85 h-20 text-[17px]" />
+          <textarea
+            id="text"
+            maxLength={185}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            className="border-b w-85 h-20 text-[17px] overflow-y-hidden"
+          />
         </div>
       )}
 
@@ -110,16 +133,16 @@ export default function EditForm({ postId, authorId, slug }: Props) {
         <button
           type="button"
           className="bg-(--color-primary) px-12 py-1.5 text-(--color-text)"
+          onClick={updatePost}
         >
           Save
         </button>
 
-        <button
-          type="button"
-          className="px-12 py-1.5 border"
-        >
-          cancel
-        </button>
+        <Link href={`/blog/${post?.slug}/${post?._id}/${post?.authorId?._id}`}>
+          <button type="button" className="px-12 py-1.5 border">
+            cancel
+          </button>
+        </Link>
       </div>
     </form>
   );
