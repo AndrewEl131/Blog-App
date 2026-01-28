@@ -72,6 +72,8 @@ export default function CommentList({ postId }: CommentListProps) {
 
       const data = await res.json();
 
+      if (!res.ok) return;
+
       if (Array.isArray(data.comments)) {
         setComments((prev) => [...prev, ...data.comments]);
       }
@@ -82,22 +84,37 @@ export default function CommentList({ postId }: CommentListProps) {
     }
   }
 
-  async function handleEditComment(commentId: string, commentContent: string) {
-    try {
-      const res = await fetch(`/api/comments/${postId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          content: commentContent,
-          commentId: commentId,
-        }),
-      });
+ async function handleEditComment(commentId: string, commentContent: string) {
+  try {
+    const res = await fetch(`/api/comments/${postId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        content: commentContent,
+        commentId,
+      }),
+    });
 
-      setEditingCommentId(null)
-    } catch (error: any) {
-      console.log(error.message);
+    if (!res.ok) return;
+
+    const data = await res.json();
+
+    if (data.success) {
+      setComments((prev) =>
+        prev.map((comment) =>
+          comment._id === commentId
+            ? { ...comment, content: commentContent }
+            : comment
+        )
+      );
+
+      setEditingCommentId(null);
     }
+  } catch (error: any) {
+    console.log(error.message);
   }
+}
+
 
   async function handleDeleteComment(commentId: string) {
     try {
@@ -107,11 +124,11 @@ export default function CommentList({ postId }: CommentListProps) {
         body: JSON.stringify({
           commentId: commentId,
         }),
-      })
+      });
 
       const data = await res.json();
 
-      if(data.success){
+      if (data.success) {
         getComments();
       }
     } catch (error: any) {
@@ -128,7 +145,7 @@ export default function CommentList({ postId }: CommentListProps) {
             width={35}
             height={35}
             alt="profile pic"
-            className="rounded-full"
+            className="rounded-full max-h-10"
           />
         ) : (
           <Image
@@ -136,19 +153,24 @@ export default function CommentList({ postId }: CommentListProps) {
             width={35}
             height={40}
             alt="profile pic"
-            className="rounded-full"
+            className="rounded-full max-h-10"
           />
         )}
-        <input
-          type="text"
-          className="md:w-[35vmin] py-0.5 px-1 border-b columns-auto"
+        <textarea
+          className="md:w-[45vmin] py-1 px-1 border-b resize-none overflow-hidden"
           value={commentContent}
-          maxLength={50}
-          onChange={(e) => setCommentContent(e.target.value)}
+          maxLength={200}
+          rows={1}
+          onChange={(e) => {
+            setCommentContent(e.target.value);
+            e.target.style.height = "auto";
+            e.target.style.height = e.target.scrollHeight + "px";
+          }}
         />
+
         <button
           type="button"
-          className="bg-(--color-primary) md:px-12 px-4 py-1.5 text-(--color-text)"
+          className="bg-(--color-primary) md:px-12 px-4 py-1.5 text-(--color-text) max-h-10"
           onClick={handleComment}
         >
           Comment
@@ -160,7 +182,7 @@ export default function CommentList({ postId }: CommentListProps) {
           comments.map((comment: Comment) => (
             <React.Fragment key={comment?._id}>
               <div className="w-full flex items-center text-[2vmin] py-2 px-2.5 gap-3 columns-auto mt-4">
-                <div className="flex flex-col justify-center items-center text-[16px]">
+                <div className="w-25 flex flex-col justify-center items-center text-[16px]">
                   {comment?.authorId?.profilePic ? (
                     <Image
                       src={comment?.authorId?.profilePic}
@@ -178,44 +200,61 @@ export default function CommentList({ postId }: CommentListProps) {
                       className="rounded-full"
                     />
                   )}
-                  <h1>@{comment?.authorId?.username}</h1>
+                  <h1 className="text-[14.5px]">
+                    @{comment?.authorId?.username}
+                  </h1>
                 </div>
                 {editingCommentId === comment._id ? (
                   <>
-                  <input
-                    type="text"
-                    value={editingContent}
-                    maxLength={50}
-                    onChange={(e) => setEditingContent(e.target.value)}
-                    className="w-[50vmin] flex-1 border-b bg-transparent outline-none"
-                  />
-                  <button className="bg-(--color-primary) px-12 py-1.5 text-(--color-text)" onClick={() => handleEditComment(comment?._id, editingContent)}>Save</button>
+                    <textarea
+                      value={editingContent}
+                      maxLength={200}
+                      rows={1}
+                      onChange={(e) => {
+                        setEditingContent(e.target.value);
+                        e.target.style.height = "auto";
+                        e.target.style.height = e.target.scrollHeight + "px";
+                      }}
+                      className="w-[50vmin] flex-1 border-b bg-transparent outline-none resize-none"
+                    />
+
+                    <button
+                      className="bg-(--color-primary) px-12 py-1.5 text-(--color-text)"
+                      onClick={() =>
+                        handleEditComment(comment?._id, editingContent)
+                      }
+                    >
+                      Save
+                    </button>
                   </>
                 ) : (
-                  <h1 className="w-[50vmin] flex-1 min-w-0 wrap-break-words">
+                  <h1 className="w-[50vmin] flex-1 min-w-0 break-words">
                     {comment.content}
                   </h1>
                 )}
 
                 {userId == comment?.authorId?._id && (
-                    <div className="relative group">
-                      <i className="cursor-pointer bx bx-dots-vertical-rounded text-[22px]" />
+                  <div className="relative group">
+                    <i className="cursor-pointer bx bx-dots-vertical-rounded text-[22px]" />
 
-                      <div className="absolute right-0 top-full  w-28 rounded-md bg-[#282142] border border-gray-600 text-sm text-gray-100 hidden group-hover:block z-20">
-                        <p
-                          className="px-3 py-2 hover:bg-gray-700 cursor-pointer"
-                          onClick={() => {
-                            setEditingCommentId(comment._id);
-                            setEditingContent(comment.content);
-                          }}
-                        >
-                          Edit
-                        </p>
-                        <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer" onClick={() => handleDeleteComment(comment._id)}>
-                          Delete
-                        </p>
-                      </div>
+                    <div className="absolute right-0 top-full  w-28 rounded-md bg-[#282142] border border-gray-600 text-sm text-gray-100 hidden group-hover:block z-20">
+                      <p
+                        className="px-3 py-2 hover:bg-gray-700 cursor-pointer"
+                        onClick={() => {
+                          setEditingCommentId(comment._id);
+                          setEditingContent(comment.content);
+                        }}
+                      >
+                        Edit
+                      </p>
+                      <p
+                        className="px-3 py-2 hover:bg-gray-700 cursor-pointer"
+                        onClick={() => handleDeleteComment(comment._id)}
+                      >
+                        Delete
+                      </p>
                     </div>
+                  </div>
                 )}
               </div>
               <hr className="text-gray-300" />

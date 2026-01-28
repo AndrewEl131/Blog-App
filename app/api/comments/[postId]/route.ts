@@ -78,7 +78,7 @@ export async function PATCH(
     { new: true },
   );
 
-  return NextResponse.json(newComment)
+  return NextResponse.json({success: true, comment: newComment})
 }
 
 export async function DELETE(req: Request) {
