@@ -156,7 +156,7 @@ export default function LoginForm() {
           onClick={() => setAuthForm("register")}
           className="text-blue-500 cursor-pointer text-decoration-line: underline hover:text-blue-400"
         >
-          {authForm === "login" ? "Log in now" : "Register Now"}
+          {authForm === "login" ? "Register Now" : "Login Now"}
         </span>
       </div>
     </form>

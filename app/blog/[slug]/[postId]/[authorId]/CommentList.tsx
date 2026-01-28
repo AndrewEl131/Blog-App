@@ -92,6 +92,8 @@ export default function CommentList({ postId }: CommentListProps) {
           commentId: commentId,
         }),
       });
+
+      setEditingCommentId(null)
     } catch (error: any) {
       console.log(error.message);
     }
@@ -122,7 +124,7 @@ export default function CommentList({ postId }: CommentListProps) {
       <div className="w-full flex md:justify-start justify-center gap-3">
         {user.profilePic ? (
           <Image
-            src={user.profilePic}
+            src={user?.profilePic}
             width={35}
             height={35}
             alt="profile pic"
@@ -161,7 +163,7 @@ export default function CommentList({ postId }: CommentListProps) {
                 <div className="flex flex-col justify-center items-center text-[16px]">
                   {comment?.authorId?.profilePic ? (
                     <Image
-                      src={comment.authorId?.profilePic}
+                      src={comment?.authorId?.profilePic}
                       width={35}
                       height={35}
                       alt="profile pic"
@@ -176,7 +178,7 @@ export default function CommentList({ postId }: CommentListProps) {
                       className="rounded-full"
                     />
                   )}
-                  <h1>@{comment.authorId.username}</h1>
+                  <h1>@{comment?.authorId?.username}</h1>
                 </div>
                 {editingCommentId === comment._id ? (
                   <>
@@ -187,7 +189,7 @@ export default function CommentList({ postId }: CommentListProps) {
                     onChange={(e) => setEditingContent(e.target.value)}
                     className="w-[50vmin] flex-1 border-b bg-transparent outline-none"
                   />
-                  <button className="bg-(--color-primary) px-12 py-1.5 text-(--color-text)" onClick={() => handleEditComment(comment._id, editingContent)}>Save</button>
+                  <button className="bg-(--color-primary) px-12 py-1.5 text-(--color-text)" onClick={() => handleEditComment(comment?._id, editingContent)}>Save</button>
                   </>
                 ) : (
                   <h1 className="w-[50vmin] flex-1 min-w-0 wrap-break-words">

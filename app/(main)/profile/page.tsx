@@ -49,7 +49,7 @@ export default function page() {
 
   return (
     <main className="min-h-screen flex justify-center items-center">
-      <div className="w-5/6 max-w-2xl px-3 py-8 flex gap-1 mb-50">
+      <div className="w-5/6 max-w-2xl px-3 py-8 flex lg:flex-row lg:justify-start justify-center flex-col lg:space-y-0 space-y-5 gap-1 mb-50">
         <form className="flex flex-col gap-10 w-[50%]">
           <div className="flex flex-col gap-3">
             <h3 className="text-2xl">Profile details</h3>
@@ -104,7 +104,7 @@ export default function page() {
             </div>
           )}
         </form>
-        <div className="flex justify-center items-center w-[50%]">
+        <div className=" flex justify-center items-center lg:w-[50%]">
           <Image
             src={imageSrc}
             alt=""

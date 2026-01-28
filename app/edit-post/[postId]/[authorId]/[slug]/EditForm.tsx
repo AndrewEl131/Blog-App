@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import avatarIcon from "@/public/icons/avatar_icon.png";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type Props = {
   postId: string;
@@ -34,6 +35,8 @@ export default function EditForm({ postId, authorId, slug }: Props) {
   const [text, setText] = useState("");
 
   const [err, setErr] = useState("");
+
+  const router = useRouter();
 
   const [selectedImg, setSelectedImg] = useState<File | null>(null);
 
@@ -69,6 +72,10 @@ export default function EditForm({ postId, authorId, slug }: Props) {
           image: selectedImg,
         }),
       });
+
+      if(!res.ok) return;
+
+      router.push(`/blog/${post?.slug}/${post?._id}/${post?.authorId?._id}`)
     } catch (error: any) {
       console.log(error.message);
     }

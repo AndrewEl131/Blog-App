@@ -4,8 +4,8 @@ import LoginForm from "./LoginForm";
 
 export default function loginPage() {
   return (
-    <div className="h-screen flex">
-      <div className="w-[50vw] h-full flex justify-center items-center">
+    <div className="h-screen flex lg:justify-start justify-center">
+      <div className="w-[50vw] h-full lg:flex justify-center items-center hidden">
         <Image
           src={"/assets/Poster.png"}
           width={1100}
