@@ -86,8 +86,8 @@ export default function BlogPage() {
   }, []);
 
   return (
-    <main className="py-[3.5vmin] flex flex-col justify-center">
-      <div className="w-[70vmin] px-2.5 py-2.5 m-auto flex flex-col gap-3">
+    <main className="py-[3.5vmin] flex flex-col justify-center items-center">
+      <div className="w-[70vmin] px-2.5 py-2.5 m-auto flex flex-col gap-3 mt-[10vmin]">
         <div className="flex justify-between">
           {user._id === post?.authorId?._id ? (
             <div className="flex items-center gap-4">
@@ -101,7 +101,7 @@ export default function BlogPage() {
               <div className="relative group">
                 <i className="cursor-pointer bx bx-dots-vertical-rounded text-[22px]" />
 
-                <div className="absolute right-0 top-full  w-28 rounded-md bg-[#282142] border border-gray-600 text-sm text-gray-100 hidden group-hover:block z-20">
+                <div className="absolute right-0 top-full w-28 rounded-md bg-[#282142] border border-gray-600 text-sm text-gray-100 hidden group-hover:block z-20">
                   <Link href={`/edit-post/${postId}/${authorId}/${slug}`}>
                     <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer">
                       Edit
