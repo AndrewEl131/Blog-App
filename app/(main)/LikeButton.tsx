@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useAuthStore } from "../store/useAuthStore";
+import { useRouter } from "next/navigation";
 
 export default function LikeButton({
   slug,
@@ -20,8 +21,9 @@ export default function LikeButton({
   const previousLikesRef = useRef(initialLikes);
 
   const { user } = useAuthStore();
+  const router = useRouter();
 
-  if(!user) return;
+  if(!user) return router.push("/login");
 
   const userId = user._id;
 

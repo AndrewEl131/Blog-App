@@ -69,13 +69,13 @@ export default function BlogPage() {
     try {
       const res = await fetch(`/api/post/${slug}/${authorId}`, {
         method: "DELETE",
-        headers: {"Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
       });
 
       if (!res.ok) return;
-      
+
       setSelectedDelete(false);
-      router.push("/")
+      router.push("/");
     } catch (error: any) {
       console.log(error.message);
     }
@@ -90,29 +90,57 @@ export default function BlogPage() {
       <div className="w-[70vmin] px-2.5 py-2.5 m-auto flex flex-col gap-3 mt-[10vmin]">
         <div className="flex justify-between">
           {user._id === post?.authorId?._id ? (
-            <div className="flex items-center gap-4">
-              <Image
-                src={post?.authorId?.profilePic || avatarIcon}
-                width={40}
-                height={40}
-                alt="profile picture"
-                className="rounded-full"
-              />
-              <div className="relative group">
-                <i className="cursor-pointer bx bx-dots-vertical-rounded text-[22px]" />
+            <>
+              <div className="flex items-center gap-4">
+                <Image
+                  src={post?.authorId?.profilePic || avatarIcon}
+                  width={40}
+                  height={40}
+                  alt="profile picture"
+                  className="rounded-full"
+                />
+                <div className="relative lg:flex hidden group">
+                  <i className="cursor-pointer bx bx-dots-vertical-rounded text-[22px]" />
 
-                <div className="absolute right-0 top-full w-28 rounded-md bg-[#282142] border border-gray-600 text-sm text-gray-100 hidden group-hover:block z-20">
-                  <Link href={`/edit-post/${postId}/${authorId}/${slug}`}>
-                    <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer">
-                      Edit
+                  <div className="absolute right-0 top-full w-28 rounded-md bg-[#282142] border border-gray-600 text-sm text-gray-100 hidden group-hover:block z-20">
+                    <Link href={`/edit-post/${postId}/${authorId}/${slug}`}>
+                      <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer">
+                        Edit
+                      </p>
+                    </Link>
+                    <p
+                      className="px-3 py-2 hover:bg-gray-700 cursor-pointer"
+                      onClick={() => setSelectedDelete(true)}
+                    >
+                      Delete
                     </p>
-                  </Link>
-                  <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer" onClick={() => setSelectedDelete(true)}>
-                    Delete
-                  </p>
+                  </div>
                 </div>
               </div>
-            </div>
+
+              {/* MOBILE MENU */}
+              <div className="relative lg:hidden flex flex-col pt-2.5">
+                <details className="relative">
+                  <summary className="list-none cursor-pointer">
+                    <i className="bx bx-dots-vertical-rounded text-[22px]" />
+                  </summary>
+
+                  <div className="absolute right-0 top-full w-28 rounded-md bg-[#282142] border border-gray-600 text-sm text-gray-100 z-20">
+                    <Link href={`/edit-post/${postId}/${authorId}/${slug}`}>
+                      <p className="px-3 py-2 hover:bg-gray-700 cursor-pointer">
+                        Edit
+                      </p>
+                    </Link>
+                    <p
+                      className="px-3 py-2 hover:bg-gray-700 cursor-pointer"
+                      onClick={() => setSelectedDelete(true)}
+                    >
+                      Delete
+                    </p>
+                  </div>
+                </details>
+              </div>
+            </>
           ) : (
             <Image
               src={post?.authorId?.profilePic || avatarIcon}
@@ -154,7 +182,9 @@ export default function BlogPage() {
       {selectedDelete && (
         <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm">
           <div className="bg-white p-6 rounded-md w-[90%] max-w-sm text-center flex flex-col gap-4">
-            <h2 className="text-xl font-semibold">Are you sure that you want to delete post?</h2>
+            <h2 className="text-xl font-semibold">
+              Are you sure that you want to delete post?
+            </h2>
             <button
               onClick={deletePost}
               className="bg-rose-500 text-white px-4 py-2 rounded hover:bg-rose-600 transition"
