@@ -22,7 +22,12 @@ export const useAuthStore = create<AuthStore>((set) => ({
   isLoading: true,
   setUser: (user) => set({ user, isLoading: false }),
   setLoading: (loading) => set({ isLoading: loading }),
-  logout: () => set({ user: null, isLoading: false }),
+  logout: async () => {
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    set({ user: null, isLoading: false });
+  },
 }));
-
-
