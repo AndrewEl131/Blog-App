@@ -1,4 +1,4 @@
-import connectToDB from "@/lib/moongose";
+import { connectToDB } from "@/lib/mongoose";
 import Post from "@/models/Post";
 import { NextResponse } from "next/server";
 

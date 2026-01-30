@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -22,10 +23,18 @@ export default function Footer() {
 
           <div className="text-[18.5px]">
             <ul className="space-y-[0.5vmin]">
-              <li className="hover-line">Home</li>
-              <li className="hover-line">Create Post</li>
-              <li className="hover-line">About</li>
-              <li className="hover-line">Contact</li>
+              <li className="hover-line">
+                <Link href={"/"}>Home</Link>
+              </li>
+              <li className="hover-line">
+                <Link href={"/about"}>About</Link>
+              </li>
+              <li className="hover-line">
+                <Link href={"/contact"}>Contact</Link>
+              </li>
+              <li className="hover-line">
+                <Link href={"/profile"}>Profile</Link>
+              </li>
             </ul>
           </div>
         </div>

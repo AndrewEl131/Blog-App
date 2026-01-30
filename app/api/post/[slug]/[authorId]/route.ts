@@ -1,4 +1,4 @@
-import connectToDB from "@/lib/moongose";
+import { connectToDB } from "@/lib/mongoose";
 import Post from "@/models/Post";
 import User from "@/models/User";
 import cloudinary from "@/lib/cloudinary";
@@ -40,17 +40,11 @@ export async function PUT(
   const post = await Post.findOne({ slug });
 
   if (!post) {
-    return NextResponse.json(
-      { error: "Post not found" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Post not found" }, { status: 404 });
   }
 
   if (post.authorId.toString() !== authorId) {
-    return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 403 }
-    );
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
   if (title !== undefined) post.title = title;
@@ -87,17 +81,11 @@ export async function DELETE(
   const post = await Post.findOne({ slug });
 
   if (!post) {
-    return NextResponse.json(
-      { error: "Post not found" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Post not found" }, { status: 404 });
   }
 
   if (post.authorId.toString() !== authorId) {
-    return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 403 }
-    );
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
   await Post.deleteOne({ _id: post._id });

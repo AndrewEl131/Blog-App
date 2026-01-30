@@ -1,6 +1,6 @@
 import User from "@/models/User";
 import { NextResponse } from "next/server";
-import connectToDB from "@/lib/moongose";
+import { connectToDB } from "@/lib/mongoose";
 import { middleware } from "../../Middleware";
 import bcrypt from "bcryptjs";
 import { generateToken } from "@/lib/utils";

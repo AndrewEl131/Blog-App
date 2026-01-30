@@ -1,4 +1,4 @@
-import connectToDB from "@/lib/moongose";
+import { connectToDB } from "@/lib/mongoose";
 import Post from "@/models/Post";
 import User from "@/models/User";
 import { NextResponse } from "next/server";
@@ -15,8 +15,8 @@ function createSlug(title: string) {
 export async function GET() {
   await connectToDB();
   const posts = await Post.find()
-  .populate("authorId", "username profilePic")
-  .sort({ createdAt: -1 });
+    .populate("authorId", "username profilePic")
+    .sort({ createdAt: -1 });
 
   return NextResponse.json(posts);
 }
@@ -36,12 +36,11 @@ export async function POST(req: Request) {
     if (!title) {
       return NextResponse.json(
         { success: false, message: "Title required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const user = await User.findById(authorId);
-
 
     let imageUrl = null;
 
@@ -49,13 +48,12 @@ export async function POST(req: Request) {
       const buffer = Buffer.from(await image.arrayBuffer());
 
       const upload = await new Promise<any>((resolve, reject) => {
-        cloudinary.uploader.upload_stream(
-          { folder: "posts" },
-          (error, result) => {
+        cloudinary.uploader
+          .upload_stream({ folder: "posts" }, (error, result) => {
             if (error) reject(error);
             else resolve(result);
-          }
-        ).end(buffer);
+          })
+          .end(buffer);
       });
 
       imageUrl = upload.secure_url;
@@ -65,9 +63,9 @@ export async function POST(req: Request) {
 
     const isMatch = await Post.findOne({ slug });
 
-    if(isMatch) {
+    if (isMatch) {
       const random = Math.random().toString(36).substring(2, 8);
-      slug = createSlug(`${title}-${random}`)
+      slug = createSlug(`${title}-${random}`);
     }
 
     const newPost = await Post.create({
@@ -75,16 +73,14 @@ export async function POST(req: Request) {
       desc: type === "text" ? desc : null,
       image: imageUrl,
       slug: slug,
-      authorId
+      authorId,
     });
 
     return NextResponse.json(newPost, { status: 201 });
-
   } catch (error: any) {
     return NextResponse.json(
       { success: false, message: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-

@@ -9,7 +9,7 @@ import { useAuthStore } from "@/app/store/useAuthStore";
 export default function page() {
   const router = useRouter();
 
-  const { user, setUser } = useAuthStore();
+  const { user, setUser, logout } = useAuthStore();
 
   const [selectedImg, setIsSelectedImg] = useState<File | null>(null);
   const [username, setUserName] = useState(user?.username);
@@ -45,6 +45,21 @@ export default function page() {
     } catch (error: any) {
       setError(error.message);
     }
+  }
+
+  async function handleLogout() {
+    const res = await fetch('http://localhost:3000/api/auth/logout', {
+      method: "POST",
+      headers: {"Content-Type": "application/json"}
+    })
+
+    const data = await res.json();
+
+    if(data.success){
+      logout();
+      router.push("/")
+    }
+    
   }
 
   return (
@@ -89,13 +104,21 @@ export default function page() {
               className="p-2 w-82 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
             />
           </div>
-          <div>
+          <div className="flex gap-3">
             <button
               type="button"
               className="bg-(--color-primary) px-12 py-1.5 text-(--color-text)"
               onClick={updateProfile}
             >
               Save
+            </button>
+
+            <button
+              type="button"
+              className="px-10 py-1.5 border text-(--color-primary) font-semibold"
+              onClick={handleLogout}
+            >
+              Log Out
             </button>
           </div>
           {error && (

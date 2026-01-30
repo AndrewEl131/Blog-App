@@ -1,4 +1,4 @@
-import connectToDB from "@/lib/moongose";
+import { connectToDB } from "@/lib/mongoose"
 import Post from "@/models/Post";
 import Comment from "@/models/Comment";
 import { NextResponse } from "next/server";
@@ -78,7 +78,7 @@ export async function PATCH(
     { new: true },
   );
 
-  return NextResponse.json({success: true, comment: newComment})
+  return NextResponse.json({ success: true, comment: newComment });
 }
 
 export async function DELETE(req: Request) {
@@ -86,9 +86,13 @@ export async function DELETE(req: Request) {
 
   const { commentId } = await req.json();
 
-  if(!commentId) return NextResponse.json({success: false, message: "Comment id not found"});
+  if (!commentId)
+    return NextResponse.json({
+      success: false,
+      message: "Comment id not found",
+    });
 
-  const comment = await Comment.findByIdAndDelete(commentId)
+  const comment = await Comment.findByIdAndDelete(commentId);
 
-  return NextResponse.json({success: true, message: "Successfully Deleted!"});
+  return NextResponse.json({ success: true, message: "Successfully Deleted!" });
 }

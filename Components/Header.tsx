@@ -15,7 +15,12 @@ export default function Header() {
         height={80}
         alt="icon"
       />
-      <h1 className="text-[2.5vmin] font-medium">Always here</h1>
+      <Image
+        src={"/assets/blogApp-second-icon.png"}
+        width={90}
+        height={80}
+        alt="icon"
+      />
     </div>
       <div>
         <header className="bg-(--color-primary) flex md:justify-around justify-between md:items-start items-center px-12">

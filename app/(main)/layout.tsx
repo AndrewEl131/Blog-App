@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Jost } from "next/font/google";
 import "@/app/globals.css";
 import Header from "@/Components/Header";
 import Footer from "@/Components/Footer";
+import AuthProvider from "@/Components/AuthProvider";
 
 const jost = Jost({
   subsets: ["latin"],
@@ -22,7 +23,9 @@ export default function RootLayout({
   return (
     <>
       <Header />
-      {children}
+      <AuthProvider>
+        {children}
+      </AuthProvider>
       <Footer />
     </>
   );

@@ -1,4 +1,4 @@
-// app/api/middleware.ts
+// app/api/Middleware.ts
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 

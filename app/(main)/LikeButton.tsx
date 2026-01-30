@@ -23,7 +23,7 @@ export default function LikeButton({
   const { user } = useAuthStore();
   const router = useRouter();
 
-  if(!user) return router.push("/login");
+  if(!user) return;
 
   const userId = user._id;
 

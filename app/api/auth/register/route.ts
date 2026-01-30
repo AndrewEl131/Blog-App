@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { generateToken } from "@/lib/utils";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import connectToDB from "@/lib/moongose";
+import { connectToDB } from "@/lib/mongoose";
 import cloudinary from "@/lib/cloudinary";
 
 interface CustomJwtPayload extends JwtPayload {

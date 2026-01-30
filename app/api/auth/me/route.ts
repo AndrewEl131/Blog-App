@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import connectToDB from "@/lib/moongose";
+import { connectToDB } from "@/lib/mongoose";
 import User from "@/models/User";
 import cloudinary from "@/lib/cloudinary";
+import { cookies } from "next/headers";
 
 interface JwtPayload {
   userId: string;
@@ -12,16 +13,13 @@ export async function GET(req: Request) {
   try {
     await connectToDB();
 
-    const token = req.headers
-      .get("cookie")
-      ?.split("; ")
-      .find((c) => c.startsWith("token="))
-      ?.split("=")[1];
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
 
     if (!token) {
       return NextResponse.json(
         { success: false, message: "Not authenticated" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -31,13 +29,13 @@ export async function GET(req: Request) {
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
 
     const user = await User.findById(decoded.userId).select(
-      "_id username email profilePic createdAt"
+      "_id username email profilePic createdAt",
     );
 
     if (!user) {
       return NextResponse.json(
         { success: false, message: "User not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -48,7 +46,7 @@ export async function GET(req: Request) {
   } catch (error) {
     return NextResponse.json(
       { success: false, message: "Invalid or expired token" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 }
@@ -66,7 +64,7 @@ export async function POST(req: Request) {
     if (!token) {
       return NextResponse.json(
         { success: false, message: "Not authenticated" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -86,13 +84,10 @@ export async function POST(req: Request) {
 
       const uploadResult: any = await new Promise((resolve, reject) => {
         cloudinary.uploader
-          .upload_stream(
-            { folder: "profilePics" },
-            (err, result) => {
-              if (err) reject(err);
-              else resolve(result);
-            }
-          )
+          .upload_stream({ folder: "profilePics" }, (err, result) => {
+            if (err) reject(err);
+            else resolve(result);
+          })
           .end(buffer);
       });
 
@@ -102,7 +97,7 @@ export async function POST(req: Request) {
     if (Object.keys(updateData).length === 0) {
       return NextResponse.json(
         { success: false, message: "Nothing to update" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -112,7 +107,7 @@ export async function POST(req: Request) {
       {
         new: true,
         select: "_id username email profilePic createdAt",
-      }
+      },
     );
 
     return NextResponse.json({
@@ -122,7 +117,7 @@ export async function POST(req: Request) {
   } catch {
     return NextResponse.json(
       { success: false, message: "Invalid token or request" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 }
