@@ -28,7 +28,7 @@ export default function PostsFeed() {
 
   async function getPosts() {
     try {
-      const res = await fetch("http://localhost:3000/api/posts");
+      const res = await fetch("/api/posts");
       if (!res.ok) return;
       const data = await res.json();
       setPosts(data);

@@ -53,7 +53,7 @@ export default function CommentMenu({
           </button>
         </>
       ) : (
-        <h1 className="w-[50vmin] flex-1 min-w-0 break-words">
+        <h1 className="w-[50vmin] flex-1 min-w-0 wrap-break-word">
           {comment.content}
         </h1>
       )}

@@ -40,7 +40,7 @@ export default function CreatePostForm() {
         formData.append("image", image);
       }
 
-      const res = await fetch("http://localhost:3000/api/posts", {
+      const res = await fetch("/api/posts", {
         method: "POST",
         body: formData,
       });
