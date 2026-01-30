@@ -1,4 +1,3 @@
-import { posts } from "@/userDummyData";
 import Image from "next/image";
 import PostsFeed from "./PostsFeed";
 import Link from "next/link";

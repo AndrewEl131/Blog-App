@@ -27,7 +27,7 @@ export default function Search() {
 
   async function getPosts() {
     try {
-      const res = await fetch("http://localhost:3000/api/posts");
+      const res = await fetch("/api/posts");
       const data = await res.json();
       setPosts(data);
     } catch (error: any) {
